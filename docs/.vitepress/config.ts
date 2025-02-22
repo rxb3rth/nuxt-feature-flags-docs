@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Nuxt Feature Flags',
-  description: 'A feature flag module for Nuxt 3 with context-aware evaluation and server-side support',
+  description: 'A feature flag module for Nuxt 3 with static and dynamic flag evaluation, server-side support, and type safety',
   themeConfig: {
     logo: '/logo.svg',
     nav: [
@@ -21,16 +21,13 @@ export default defineConfig({
       {
         text: 'Configuration',
         items: [
-          { text: 'Module Options', link: '/config/' },
-          { text: 'Context Setup', link: '/config/context' }
+          { text: 'Module Options', link: '/config/' }
         ]
       },
       {
         text: 'Usage',
         items: [
-          { text: 'Basic Usage', link: '/usage/' },
-          { text: 'Composables', link: '/usage/composables' },
-          { text: 'Flag Definitions', link: '/usage/flag-definitions' }
+          { text: 'Basic Usage', link: '/usage/' }
         ]
       }
     ],

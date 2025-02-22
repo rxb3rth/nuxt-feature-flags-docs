@@ -1,14 +1,5 @@
 # Features
 
-## Context-Aware Evaluation
-
-Nuxt Feature Flags allows you to evaluate flags based on various contexts:
-
-- User data
-- Environment variables
-- Cookies
-- Custom contexts
-
 ## Server-Side Support
 
 Flags can be evaluated on the server side, enabling:
@@ -16,6 +7,7 @@ Flags can be evaluated on the server side, enabling:
 - Consistent behavior across server and client
 - Better performance
 - SEO optimization
+- Protected API routes
 
 ## TypeScript Support
 
@@ -30,16 +22,24 @@ Full TypeScript support with:
 Get detailed explanations for flag states:
 
 ```ts
-const { get } = useFeatureFlags()
+const { get } = useClientFlags()
 const flag = get('experimentalFeature')
 
 console.log(flag.explanation) // Why the flag is enabled/disabled
 ```
 
+## Static and Dynamic Evaluation
+
+Support for both static and dynamic flag evaluation:
+
+- Static flags for simple on/off features
+- Dynamic evaluation based on context
+- Type-safe flag definitions
+
 ## Nuxt 3 Integration
 
 Seamless integration with Nuxt 3:
 
-- Composables for easy access
+- Client and server composables
 - Runtime config support
 - Auto-imports

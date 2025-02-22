@@ -5,12 +5,11 @@
 The module accepts the following options:
 
 ```ts
-interface ModuleOptions {
-  flags?: Record<string, FlagDefinition>
-  defaultContext?: Record<string, any>
-  envKey?: string
-  contextPath?: string
+interface FeatureFlagsConfig {
+  flags?: FlagDefinition // Feature flags object
 }
+
+type FlagDefinition = Record<string, boolean>
 ```
 
 ### flags
@@ -21,54 +20,29 @@ Define your feature flags:
 export default defineNuxtConfig({
   featureFlags: {
     flags: {
-      // Simple boolean flag
-      simpleFlag: true,
-      
-      // Percentage rollout
-      betaFeature: { percentage: 50 },
-      
-      // Context-based evaluation
-      premiumFeature: (ctx) => ctx.user?.isPremium
+      // Simple boolean flags
+      promoBanner: true,
+      betaFeature: false,
+      newDashboard: false
     }
   }
 })
 ```
 
-### defaultContext
-
-Set default context values:
+## Flag Types
 
 ```ts
-export default defineNuxtConfig({
-  featureFlags: {
-    defaultContext: {
-      environment: process.env.NODE_ENV,
-      region: 'US'
-    }
+interface Flag<T = boolean> {
+  value: T
+  explanation?: {
+    reason: 'STATIC' | 'TARGETING_MATCH' | 'DEFAULT'
+    rule?: string
   }
-})
+}
 ```
 
-### envKey
+The explanation object provides information about why a flag is enabled or disabled:
 
-Configure the environment variable key for runtime flags:
-
-```ts
-export default defineNuxtConfig({
-  featureFlags: {
-    envKey: 'NUXT_PUBLIC_FEATURE_FLAGS'
-  }
-})
-```
-
-### contextPath
-
-Specify the path to your context file:
-
-```ts
-export default defineNuxtConfig({
-  featureFlags: {
-    contextPath: '~/feature-flags.context'
-  }
-})
-```
+- `STATIC`: Flag value is statically defined
+- `TARGETING_MATCH`: Flag value is determined by targeting rules
+- `DEFAULT`: Flag falls back to default value

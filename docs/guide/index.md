@@ -2,7 +2,7 @@
 
 ## Installation
 
-You can add Nuxt Feature Flags to your project using the Nuxt CLI:
+Add Nuxt Feature Flags to your project using the Nuxt CLI:
 
 ```bash
 npx nuxi module add nuxt-feature-flags
@@ -31,30 +31,55 @@ export default defineNuxtConfig({
 })
 ```
 
-2. Create a context file to define how flags should be evaluated:
-
-```ts
-// ~/feature-flags.context.ts
-export default function featureFlagsContext(event: any) {
-  return {
-    // Your context properties
-    environment: process.env.NODE_ENV,
-    // Add more context as needed
-  }
-}
-```
-
-3. Configure your flags in `nuxt.config.ts`:
+2. Configure your flags:
 
 ```ts
 export default defineNuxtConfig({
   modules: ['nuxt-feature-flags'],
   featureFlags: {
-    contextPath: '~/feature-flags.context',
     flags: {
-      newFeature: true,
-      betaFeature: (ctx) => ctx.environment === 'development'
+      newDashboard: false,
+      experimentalFeature: true
     }
   }
 })
 ```
+
+3. Use in your components:
+
+```vue
+<script setup>
+const { isEnabled, get } = useClientFlags()
+</script>
+
+<template>
+  <div>
+    <NewDashboard v-if="isEnabled('newDashboard')" />
+    <div v-if="get('experimentalFeature')?.explanation">
+      Flag reason: {{ get('experimentalFeature')?.explanation?.reason }}
+    </div>
+  </div>
+</template>
+```
+
+4. Use in server routes:
+
+```ts
+// server/api/dashboard.ts
+export default defineEventHandler((event) => {
+  const { isEnabled } = useServerFlags(event)
+
+  if (!isEnabled('newDashboard')) {
+    throw createError({
+      statusCode: 404,
+      message: 'Dashboard not available'
+    })
+  }
+
+  return {
+    stats: {
+      users: 100,
+      revenue: 50000
+    }
+  }
+})
