@@ -1,5 +1,31 @@
 # Features
 
+## Context-Aware Evaluation
+
+Flags can be evaluated based on various contextual factors:
+
+- User roles and permissions
+- Geographic location
+- Device type and capabilities
+- Environment (development, production)
+- Custom business rules
+
+Example of context-based evaluation:
+
+```ts
+// feature-flags.config.ts
+import type { H3EventContext } from 'h3'
+
+export default function featureFlagsConfig(context?: H3EventContext) {
+  return {
+    isAdmin: context?.user?.role === 'admin',
+    betaFeature: context?.user?.isBetaTester,
+    mobileFeature: context?.device?.isMobile,
+    devTools: process.env.NODE_ENV === 'development'
+  }
+}
+```
+
 ## Server-Side Support
 
 Flags can be evaluated on the server side, enabling:
@@ -9,6 +35,17 @@ Flags can be evaluated on the server side, enabling:
 - SEO optimization
 - Protected API routes
 
+```ts
+const { isEnabled, get } = await useServerFlags(event)
+
+if (!isEnabled('newFeature')) {
+  throw createError({
+    statusCode: 404,
+    message: 'Feature not available'
+  })
+}
+```
+
 ## TypeScript Support
 
 Full TypeScript support with:
@@ -16,6 +53,16 @@ Full TypeScript support with:
 - Type-safe flag definitions
 - Autocomplete support
 - Type inference
+
+```ts
+interface Flag<T = boolean> {
+  value: T
+  explanation?: {
+    reason: 'STATIC' | 'TARGETING_MATCH' | 'DEFAULT'
+    rule?: string
+  }
+}
+```
 
 ## Explanation System
 

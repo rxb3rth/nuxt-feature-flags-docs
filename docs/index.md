@@ -5,16 +5,16 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-A feature flag module for Nuxt 3 with static and dynamic flag evaluation, server-side support, and type safety.
+A powerful, type-safe feature flag module for Nuxt 3 that enables both static and dynamic flag evaluation with server-side support. Perfect for A/B testing, gradual rollouts, and feature management.
 
 ## Features
 
-- ⚡ &nbsp;Server-side evaluation
-- 🛠 &nbsp;TypeScript ready
-- 🔍 &nbsp;Explanation system for flag states
-- 🧩 &nbsp;Nuxt 3 composables integration
-- 🔧 &nbsp;Runtime configuration support
-- 🎯 &nbsp;Static and dynamic flag evaluation
+- 🎯 **Context-aware evaluation**: Evaluate flags based on request context (user roles, geo-location, device type, etc.)
+- 🛠 **TypeScript Ready**: Full TypeScript support with type-safe flag definitions and autocomplete
+- 🔍 **Explanation System**: Understand why flags are enabled/disabled with detailed explanations
+- 🧩 **Nuxt 3 Integration**: Seamless integration with auto-imports and runtime config
+- 🎯 **Static & Dynamic Flags**: Support for both simple boolean flags and dynamic evaluation
+- 🔒 **Type Safety**: Catch errors early with full type inference and validation
 
 ## Quick Setup
 
@@ -26,6 +26,7 @@ npx nuxi module add nuxt-feature-flags
 
 2. Configure in `nuxt.config.ts`:
 
+Basic usage with plain configuration:
 ```ts
 export default defineNuxtConfig({
   modules: ['nuxt-feature-flags'],
@@ -33,9 +34,36 @@ export default defineNuxtConfig({
     flags: {
       newDashboard: false,
       experimentalFeature: true
-    },
+    }
   }
 })
+```
+
+Basic usage with configuration file:
+```ts
+export default defineNuxtConfig({
+  modules: ['nuxt-feature-flags'],
+  featureFlags: {
+    config: './feature-flags.config.ts',
+  }
+})
+```
+
+Advanced usage with context-based flag rules (Only for API route requests):
+```ts
+// feature-flags.config.ts
+import type { H3EventContext } from 'h3'
+
+// Context available only on server, context will be undefined at the client side
+export default function featureFlagsConfig(context?: H3EventContext) {
+  return {
+    isAdmin: context?.user?.role === 'admin',
+    newDashboard: true,
+    experimentalFeature: process.env.NODE_ENV === 'development',
+    promoBanner: false,
+    betaFeature: false,
+  }
+}
 ```
 
 3. Use in components:
@@ -60,9 +88,8 @@ const { isEnabled, get } = useClientFlags()
 ```ts
 // server/api/dashboard.ts
 export default defineEventHandler((event) => {
-  const { isEnabled } = useServerFlags(event)
+  const { isEnabled } = await useServerFlags(event)
 
-  // Check if feature flag is enabled
   if (!isEnabled('newDashboard')) {
     throw createError({
       statusCode: 404,
