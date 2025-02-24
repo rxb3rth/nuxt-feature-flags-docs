@@ -71,21 +71,3 @@ export default function featureFlagsConfig(context?: H3EventContext) {
   }
 }
 ```
-
-## Flag Types
-
-```ts
-interface Flag<T = boolean> {
-  value: T
-  explanation?: {
-    reason: 'STATIC' | 'TARGETING_MATCH' | 'DEFAULT'
-    rule?: string
-  }
-}
-```
-
-The explanation object provides information about why a flag is enabled or disabled:
-
-- `STATIC`: Flag value is statically defined
-- `TARGETING_MATCH`: Flag value is determined by targeting rules
-- `DEFAULT`: Flag falls back to default value
