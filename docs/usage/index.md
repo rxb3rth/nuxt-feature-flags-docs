@@ -6,14 +6,10 @@ Use the `useClientFlags` composable in your components:
 
 ```vue
 <script setup>
-const { isEnabled, get, flags } = useClientFlags()
+const { isEnabled, flags } = useClientFlags()
 
 // Check if a flag is enabled
 const showNewFeature = isEnabled('newFeature')
-
-// Get flag with explanation
-const experimentalFlag = get('experimentalFeature')
-console.log(experimentalFlag.explanation)
 
 // Access all flags
 console.log(flags)
@@ -22,9 +18,6 @@ console.log(flags)
 <template>
   <div>
     <NewFeature v-if="showNewFeature" />
-    <div v-if="experimentalFlag?.explanation">
-      Flag enabled because: {{ experimentalFlag.explanation.reason }}
-    </div>
   </div>
 </template>
 ```
@@ -35,7 +28,7 @@ Use the `useServerFlags` composable in your server routes:
 
 ```ts
 export default defineEventHandler(async (event) => {
-  const { isEnabled, get } = await useServerFlags(event)
+  const { isEnabled } = await useServerFlags(event)
 
   // Check if a flag is enabled
   if (!isEnabled('newFeature')) {
@@ -44,10 +37,6 @@ export default defineEventHandler(async (event) => {
       message: 'Feature not available'
     })
   }
-
-  // Get flag with explanation
-  const flag = get('experimentalFeature')
-  console.log(flag.explanation)
 
   return {
     // Your response data
@@ -89,15 +78,6 @@ export default function featureFlagsConfig(context?: H3EventContext) {
 The module provides full TypeScript support:
 
 ```ts
-// Types for flag values
-interface Flag<T = boolean> {
-  value: T
-  explanation?: {
-    reason: 'STATIC' | 'TARGETING_MATCH' | 'DEFAULT'
-    rule?: string
-  }
-}
-
 // Your flags will be type-checked
 const { isEnabled } = useClientFlags()
 isEnabled('nonExistentFlag') // TypeScript error

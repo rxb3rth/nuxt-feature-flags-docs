@@ -36,7 +36,7 @@ Flags can be evaluated on the server side, enabling:
 - Protected API routes
 
 ```ts
-const { isEnabled, get } = await useServerFlags(event)
+const { isEnabled } = await useServerFlags(event)
 
 if (!isEnabled('newFeature')) {
   throw createError({
@@ -53,27 +53,6 @@ Full TypeScript support with:
 - Type-safe flag definitions
 - Autocomplete support
 - Type inference
-
-```ts
-interface Flag<T = boolean> {
-  value: T
-  explanation?: {
-    reason: 'STATIC' | 'TARGETING_MATCH' | 'DEFAULT'
-    rule?: string
-  }
-}
-```
-
-## Explanation System
-
-Get detailed explanations for flag states:
-
-```ts
-const { get } = useClientFlags()
-const flag = get('experimentalFeature')
-
-console.log(flag.explanation) // Why the flag is enabled/disabled
-```
 
 ## Static and Dynamic Evaluation
 
