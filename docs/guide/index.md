@@ -49,15 +49,12 @@ export default defineNuxtConfig({
 
 ```vue
 <script setup>
-const { isEnabled, get } = useClientFlags()
+const { isEnabled } = useClientFlags()
 </script>
 
 <template>
   <div>
     <NewDashboard v-if="isEnabled('newDashboard')" />
-    <div v-if="get('experimentalFeature')?.explanation">
-      Flag reason: {{ get('experimentalFeature')?.explanation?.reason }}
-    </div>
   </div>
 </template>
 ```
