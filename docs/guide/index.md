@@ -34,6 +34,7 @@ export default defineNuxtConfig({
 2. Configure your flags:
 
 ```ts
+// Basic usage with plain configuration
 export default defineNuxtConfig({
   modules: ['nuxt-feature-flags'],
   featureFlags: {
@@ -43,13 +44,26 @@ export default defineNuxtConfig({
     }
   }
 })
+
+// Advanced usage with context-based flag rules
+// feature-flags.config.ts
+import { defineFeatureFlags } from '#feature-flags/handler'
+
+export default defineFeatureFlags((context) => {
+  return {
+    isAdmin: context?.user?.role === 'admin',
+    newDashboard: true,
+    experimentalFeature: process.env.NODE_ENV === 'development',
+    betaFeature: context?.user?.isBetaTester ?? false,
+  }
+})
 ```
 
 3. Use in your components:
 
 ```vue
 <script setup>
-const { isEnabled } = useClientFlags()
+const { isEnabled } = useFeatureFlags()
 </script>
 
 <template>
@@ -64,7 +78,7 @@ const { isEnabled } = useClientFlags()
 ```ts
 // server/api/dashboard.ts
 export default defineEventHandler((event) => {
-  const { isEnabled } = useServerFlags(event)
+  const { isEnabled } = getFeatureFlags(event)
 
   if (!isEnabled('newDashboard')) {
     throw createError({
@@ -80,3 +94,4 @@ export default defineEventHandler((event) => {
     }
   }
 })
+```

@@ -14,16 +14,16 @@ Example of context-based evaluation:
 
 ```ts
 // feature-flags.config.ts
-import type { H3EventContext } from 'h3'
+import { defineFeatureFlags } from '#feature-flags/handler'
 
-export default function featureFlagsConfig(context?: H3EventContext) {
+export default defineFeatureFlags((context) => {
   return {
     isAdmin: context?.user?.role === 'admin',
     betaFeature: context?.user?.isBetaTester,
     mobileFeature: context?.device?.isMobile,
     devTools: process.env.NODE_ENV === 'development'
   }
-}
+})
 ```
 
 ## Server-Side Support
@@ -36,7 +36,7 @@ Flags can be evaluated on the server side, enabling:
 - Protected API routes
 
 ```ts
-const { isEnabled } = await useServerFlags(event)
+const { isEnabled } = getFeatureFlags(event)
 
 if (!isEnabled('newFeature')) {
   throw createError({
